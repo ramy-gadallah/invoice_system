@@ -1,0 +1,106 @@
+
+					* ملحوظة *
+
+   Login,Register دا بيعملى  Route-> - Auth::routes(); - هيجبلى  ui اللى هيا ال  register بتاع ال pakage لو انا عامل ال    
+ اول مره واوقفو بعد كده اقوم اوقفو بالشكل ده   register طيب لو انا عاوز اعمل   
+     Auth::routes(['register'=>false]);
+
+____________________________________________________________________________________________________________
+
+ بيبقى بالشكل ده  modal لو عاوز 
+
+<div class="modal" id="modaldemo8">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content modal-content-demo">
+				<div class="modal-header">
+					<h6 class="modal-title">Basic Modal</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<h6>Modal Body</h6>
+					<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+				</div>
+				<div class="modal-footer">
+					<button class="btn ripple btn-primary" type="button">Save changes</button>
+					<button class="btn ripple btn-secondary" data-dismiss="modal" type="button">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+بتاع الزرار href يبقى هوا نفس نفس اسم ال  modal يفتح علطول ولازم ال  modal ودا الزرار اللى اول م اضغط عليه ال
+
+	modal               button
+    id="modaldemo8" = href="#modaldemo8"
+    id="modaldemo8" = data-target="#modaldemo8" 
+
+                                    <div class="col-sm-6 col-md-4 col-xl-3">
+						<a class="modal-effect btn btn-outline-primary btn-block" data-effect="effect-scale" data-toggle="modal" href="#modaldemo8">Scale</a>
+					</div>	
+
+________________________________________________________________________________________________________________________________________________________________________________________
+
+لو عاوز اخزن فورم بس مش فورم عادى يعنى مثلا فورم بسجل فيها اقسام ولو القسم دا سجلتو مره ميرضاش يسجل يقولى انت سجلت مره طب لو القسم مش موجود يسجل عادى 
+ 
+public function store(Request $request)
+    {
+        $input=$request->all();   بتاع الفورم input هنا بمسك كل 
+        $b_exists= Section::where('section_name','=',$request->section_name)->exists();  قبل كده مره  $request(section_name) موجود فيه column(section_name)هنا بقولو عندما ال 
+ 
+        if($b_exists){ if اعملى حالة 
+            session()->flash('Error','خطا القسم مسجل مسبقا ');  view وارجعلى ب خطا ف ال  session وافتحلى 
+            return redirect()->back();
+        }
+
+        else{
+            Section::create([  لو متسجلش قبل كده سجلو 
+                'section_name'=>$request->section_name,
+                'description'=>$request->description,
+                'created_by'=>auth()->user()->name,
+            ]);
+
+            session()->flash('Add','تم اضافة القسم بنجاح'); عادى view وارجعلى ب الرسالة دى ف ال 
+            return redirect()->route('sections.index');
+        }
+    }
+
+
+
+@if (session()->has('Add'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ session()->get('Add') }}</strong>
+      	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+       	   </button>
+    </div>
+	@endif  
+
+@if (session()->has('Error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{ session()->get('Error') }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+________________________________________________________________________________________________________________________________________________________________
+
+*    $b_exists= Section::where('section_name','=',$request->section_name)->exists();
+        if($b_exists){
+            session()->flash('Error','خطا القسم مسجل مسبقا ');
+            return redirect()->back();
+        }                                                                                    controller دا ف ال 
+
+* @if (session()->has('Error'))         view  وهنا بيظهر ف ال 
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{ session()->get('Error') }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+_________________________________________________________________________________________________________________________________________________________
+
+
+
